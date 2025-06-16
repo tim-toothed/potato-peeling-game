@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potato Peeling Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div id="username-screen" class="hidden">
+            <h1>Enter your username</h1>
+            <input type="text" id="username-input" placeholder="Username">
+            <button id="username-submit">Submit</button>
+        </div>
+      
+        <div id="menu" class="hidden">
+            <img src="https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/title.png?v=1717907392851" alt="Title" class="title">
+            <button id="start-button">Start</button>
+            <button id="leaderboard-button">Leaderboard</button>
+            <div class="settings-buttons">
+                <button id="menu-toggle-music-button">Music Off</button>
+                <button id="menu-toggle-sound-button">SFX Off</button>
+            </div>
+        </div>
+      
+        <div id="difficulty" class="hidden">
+            <button class="difficulty-button" data-time="2000" data-difficulty="easy">Easy</button>
+            <button class="difficulty-button" data-time="1200" data-difficulty="medium">Medium</button>
+            <button class="difficulty-button" data-time="900" data-difficulty="hardcore">Hardcore</button>
+        </div>
+      
+        <div id="game" class="hidden">
+            <img id="game-bg" src="https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/bck.png?v=1717907389067" alt="Background" class="background">
+            <div id="score">Score: 0</div>
+            <button id="pause-button" class="top-left">Pause</button>
+            <div id="potato-container"></div>
+            <div id="potato-anim-container"></div>
+        </div>
+      
+        <div id="pause-screen" class="hidden">
+            <h1>Paused</h1> 
+            <button id="resume-button">Resume</button>
+            <button id="toggle-music-button">Music Off</button>
+            <button id="toggle-sound-button">SFX Off</button>
+            <button id="back-to-menu-button">Back to Menu</button>
+        </div>
+      
+        <div id="leaderboard" class="hidden">
+            <h1>Leaderboard</h1>
+            <div id="scores"></div>
+            <button id="restart-button">Restart</button>
+            <button id="back-button">Back to Menu</button>
+        </div>
+        
+        <div id="menu-leaderboard-screen" class="hidden">
+            <h1>Leaderboard</h1>
+            <div id="menu-leaderboard-table">
+                <div class="leaderboard-column">
+                    <h2>Easy</h2>
+                    <div id="easy-scores"></div>
+                </div>
+                <div class="leaderboard-column">
+                    <h2>Medium</h2>
+                    <div id="medium-scores"></div>
+                </div>
+                <div class="leaderboard-column">
+                    <h2>Hardcore</h2>
+                    <div id="hardcore-scores"></div>
+                </div>
+            </div>
+            <button id="menu-leaderboard-back-button">Back to Menu</button>
+        </div>
+
+      
+        <div id="log-container" style="display: none; position: fixed; bottom: 10px; right: 10px; width: 300px; max-height: 200px; overflow-y: auto; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 10px; font-size: 12px; border-radius: 5px;"></div>
+        <audio id="menu-music" src="https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/menu_music.mp3?v=1717907415699" loop></audio>
+        <audio id="game-music" src="https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/in_game_music.mp3?v=1717907417652" loop></audio>
+        <audio id="score01" src="https://cdn.glitch.global/98068d87-f126-40c5-98b2-8267f0a1dce9/score_01.mp3?v=1718247092646"></audio>
+        <audio id="score05" src="https://cdn.glitch.global/98068d87-f126-40c5-98b2-8267f0a1dce9/score_05.mp3?v=1718247093035"></audio>
+        <audio id="score25" src="https://cdn.glitch.global/98068d87-f126-40c5-98b2-8267f0a1dce9/score_25.mp3?v=1718247092169"></audio>
+        <img id="menu-bg" src="https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/bck_menu.png?v=1717907390751" alt="Background" class="background">
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black;
+    overflow: hidden;
+}
+
+.game-container {
+    width: 360px;
+    height: 640px;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+}
+
+.title {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    background: url('https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/title.png?v=1717907392851') center center / cover no-repeat;
+}
+
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.settings-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.settings-buttons button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.potato {
+    width: 60px;
+    height: 90px;
+    position: absolute;
+    cursor: pointer;
+    background-size: cover;
+    z-index: 2;
+    background-repeat: no-repeat;
+    background-image: url('https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/pot0.png?v=1717924371096');
+}
+
+.potato_anim {
+    width: 60px;
+    height: 90px;
+    position: absolute;
+    background-size: cover;
+    z-index: 1;
+    background-repeat: no-repeat;
+    background-image: url('https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/pot1.png?v=1717920777325');
+    pointer-events: none;
+}
+
+.potato_anim_half {
+    width: 62px;
+    height: 115px;
+    position: absolute;
+    background-size: cover;
+    z-index: 1;
+    background-repeat: no-repeat;
+    background-image: url('https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/pot0_5.png?v=1717929947069');
+    pointer-events: none;
+}
+
+@keyframes throwUpAndFall {
+    0% {
+        transform: translate(0, 0) rotate(0);
+        opacity: 1;
+    }
+    25% {
+        transform: translate(-50px, -50px) rotate(90deg);
+    }
+    100% {
+        transform: translate(var(--endX), var(--endY)) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+@keyframes opacityTransitionHalf {
+    0% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes opacityTransitionFull {
+    0% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#scores {
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    width: 80%;
+    margin: 20px auto;
+}
+
+#leaderboard h1 {
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#leaderboard button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Styles for the pause screen */
+
+#pause-button {
+    position: absolute;
+    top: -10px; /* Align with the score's top position */
+    left: 10px; /* Adjust the left position as needed */
+    z-index: 10;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#pause-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+#pause-screen.hidden {
+    display: none;
+}
+
+#pause-screen h1 {
+    margin: 0; /* Reset margin for h1 */
+    color: white; /* Add text color for better visibility */
+}
+
+#pause-screen button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#score {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: white;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Styles for the username input screen */
+#username-screen {
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#username-input {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}
+
+#username-submit {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Styles for the username input screen */
+
+#menu-leaderboard-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    color: white;
+    text-align: center;
+}
+
+#menu-leaderboard-screen h1{
+    margin: 0; /* Reset margin for h1 */
+    color: white; /* Add text color for better visibility */
+}
+
+#menu-leaderboard-screen.hidden {
+    display: none;
+}
+
+#menu-leaderboard-table {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+}
+
+.leaderboard-column {
+    width: 30%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+.leaderboard-column h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+#menu-leaderboard-screen button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+
