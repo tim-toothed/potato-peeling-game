@@ -225,7 +225,7 @@ async function fetchAllScores() {
 
 
     function updateScore() {
-        scoreDisplay.textContent = `Score: ${score}`;
+        scoreDisplay.textContent = `СЧЁТ: ${score}`;
     }
 
     function spawnPotato() {
@@ -437,8 +437,8 @@ async function fetchAllScores() {
 
     function toggleMusic() {
         musicOn = !musicOn;
-        menuToggleMusicButton.textContent = musicOn ? 'Music Off' : 'Music On';
-        toggleMusicButton.textContent = musicOn ? 'Music Off' : 'Music On';
+        menuToggleMusicButton.textContent = musicOn ? 'Выкл. музыку' : 'Вкл. музыку';
+        toggleMusicButton.textContent = musicOn ? 'Выкл. музыку' : 'Вкл. музыку';
         if (musicOn) {
             menuMusic.muted = false;
             gameMusic.muted = false;
@@ -450,8 +450,8 @@ async function fetchAllScores() {
 
     function toggleSound() {
         soundOn = !soundOn;
-        menuToggleSoundButton.textContent = soundOn ? 'SFX Off' : 'SFX On';
-        toggleSoundButton.textContent = soundOn ? 'SFX Off' : 'SFX On';
+        menuToggleSoundButton.textContent = soundOn ? 'Выкл. звуки' : 'Вкл. звуки';
+        toggleSoundButton.textContent = soundOn ? 'Выкл. звуки' : 'Вкл. звуки';
     }
 
   
@@ -478,7 +478,7 @@ async function fetchAllScores() {
         if (currentUsername) {
             showMenu();
         } else {
-            alert('Please enter a valid username.');
+            alert('Нормальное имя введи!');
         }
     });
 

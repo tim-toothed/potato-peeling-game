@@ -3,74 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Potato Peeling Game</title>
+    <title>Вилкой Чисти!</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="game-container">
         <div id="username-screen" class="hidden">
-            <h1>Enter your username</h1>
-            <input type="text" id="username-input" placeholder="Username">
-            <button id="username-submit">Submit</button>
+            <h1>Твое имя:</h1>
+            <input type="text" id="username-input" placeholder="Никнейм">
+            <button id="username-submit">Поехали!</button>
         </div>
       
         <div id="menu" class="hidden">
             <img src="assets/images/title.png" alt="Title" class="title">
-            <button id="start-button">Start</button>
-            <button id="leaderboard-button">Leaderboard</button>
+            <button id="start-button">Играть</button>
+            <button id="leaderboard-button">ТОП ШИЗОВ</button>
             <div class="settings-buttons">
-                <button id="menu-toggle-music-button">Music Off</button>
-                <button id="menu-toggle-sound-button">SFX Off</button>
+                <button id="menu-toggle-music-button">Выкл. музыку</button>
+                <button id="menu-toggle-sound-button">Выкл. звуки</button>
             </div>
         </div>
       
         <div id="difficulty" class="hidden">
-            <button class="difficulty-button" data-time="2000" data-difficulty="easy">Easy</button>
-            <button class="difficulty-button" data-time="1200" data-difficulty="medium">Medium</button>
-            <button class="difficulty-button" data-time="900" data-difficulty="hardcore">Hardcore</button>
+            <button class="difficulty-button" data-time="2000" data-difficulty="easy">Салага</button>
+            <button class="difficulty-button" data-time="1200" data-difficulty="medium">Норм чел</button>
+            <button class="difficulty-button" data-time="900" data-difficulty="hardcore">Шиз</button>
         </div>
       
         <div id="game" class="hidden">
             <img id="game-bg" src="assets/images/bck.png" alt="Background" class="background">
-            <div id="score">Score: 0</div>
-            <button id="pause-button" class="top-left">Pause</button>
+            <div id="score">СЧЁТ: 0</div>
+            <button id="pause-button" class="top-left">Пауза</button>
             <div id="potato-container"></div>
             <div id="potato-anim-container"></div>
         </div>
       
         <div id="pause-screen" class="hidden">
-            <h1>Paused</h1> 
-            <button id="resume-button">Resume</button>
-            <button id="toggle-music-button">Music Off</button>
-            <button id="toggle-sound-button">SFX Off</button>
-            <button id="back-to-menu-button">Back to Menu</button>
+            <h1>Пауза</h1> 
+            <button id="resume-button">Продолжить</button>
+            <button id="toggle-music-button">Выкл. музыку</button>
+            <button id="toggle-sound-button">Выкл. звуки</button>
+            <button id="back-to-menu-button">В главное меню</button>
         </div>
       
         <div id="leaderboard" class="hidden">
-            <h1>Leaderboard</h1>
+            <h1>ТОП ШИЗОВ</h1>
             <div id="scores"></div>
-            <button id="restart-button">Restart</button>
-            <button id="back-button">Back to Menu</button>
+            <button id="restart-button">Заново</button>
+            <button id="back-button">В главное меню</button>
         </div>
         
         <div id="menu-leaderboard-screen" class="hidden">
-            <h1>Leaderboard</h1>
+            <h1>ТОП ШИЗОВ</h1>
             <div id="menu-leaderboard-table">
                 <div class="leaderboard-column">
-                    <h2>Easy</h2>
+                    <h2>Салага</h2>
                     <div id="easy-scores"></div>
                 </div>
                 <div class="leaderboard-column">
-                    <h2>Medium</h2>
+                    <h2>Норм чел</h2>
                     <div id="medium-scores"></div>
                 </div>
                 <div class="leaderboard-column">
-                    <h2>Hardcore</h2>
+                    <h2>Шиз</h2>
                     <div id="hardcore-scores"></div>
                 </div>
             </div>
-            <button id="menu-leaderboard-back-button">Back to Menu</button>
+            <button id="menu-leaderboard-back-button">В главное меню</button>
         </div>
 
       
