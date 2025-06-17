@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Supabase client
-
-    NEXT_PUBLIC_SUPABASE_URL="https://ylrbjiciudweqmfnzghc.supabase.co"
-    NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo"     
-    const supabase = supabase.createClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    // ANON KEY IS USED
+    const supabaseUrl = 'https://ylrbjiciudweqmfnzghc.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
     const usernameScreen = document.getElementById('username-screen');
     const usernameInput = document.getElementById('username-input');
@@ -51,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const score05 = document.getElementById('score05');
     const score25 = document.getElementById('score25');
 
+  
     let score = 0;
     let gameOver = false;
     let potatoTimeout;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bucketY = 340;
 
     function playScoreSound(score) {
-        if (!soundOn) return;
+        if (!soundOn) return; // Check if sound is turned on before playing any sound
 
         let audio;
         if (score % 25 === 0) {
@@ -79,59 +79,61 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.play();
     }
 
+  
+  
     function isWithinExclusionZone(x, y, exclusionZones) {
         return exclusionZones.some(zone => (
             x > zone.left && x < zone.right && y > zone.top && y < zone.bottom
         ));
     }
   
-    async function fetchAllScores() {
-        logToPage('fetchAllScores called');
-        try {
-            // Fetch scores for each difficulty from Supabase
-            const { data: easyScores, error: easyError } = await supabase
-                .from('Leaderboard')
-                .select('*')
-                .eq('difficulty', 'easy')
-                .order('score', { ascending: false });
+async function fetchAllScores() {
+    logToPage('fetchAllScores called');
+    try {
+        // Fetch scores for each difficulty from Supabase
+        const { data: easyData, error: easyError } = await supabase
+            .from('potato-leaderboard')
+            .select('*')
+            .eq('difficulty', 'easy')
+            .order('score', { ascending: false });
 
-            const { data: mediumScores, error: mediumError } = await supabase
-                .from('Leaderboard')
-                .select('*')
-                .eq('difficulty', 'medium')
-                .order('score', { ascending: false });
+        const { data: mediumData, error: mediumError } = await supabase
+            .from('potato-leaderboard')
+            .select('*')
+            .eq('difficulty', 'medium')
+            .order('score', { ascending: false });
 
-            const { data: hardcoreScores, error: hardcoreError } = await supabase
-                .from('Leaderboard')
-                .select('*')
-                .eq('difficulty', 'hardcore')
-                .order('score', { ascending: false });
+        const { data: hardcoreData, error: hardcoreError } = await supabase
+            .from('potato-leaderboard')
+            .select('*')
+            .eq('difficulty', 'hardcore')
+            .order('score', { ascending: false });
 
-            if (easyError || mediumError || hardcoreError) {
-                throw easyError || mediumError || hardcoreError;
-            }
-
-            logToPage('Scores data received');
-            logToPage('Easy: ' + JSON.stringify(easyScores));
-            logToPage('Medium: ' + JSON.stringify(mediumScores));
-            logToPage('Hardcore: ' + JSON.stringify(hardcoreScores));
-
-            const formatScores = (scores) => scores.map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
-
-            easyScoresDisplay.innerHTML = formatScores(easyScores || []);
-            mediumScoresDisplay.innerHTML = formatScores(mediumScores || []);
-            hardcoreScoresDisplay.innerHTML = formatScores(hardcoreScores || []);
-        } catch (error) {
-            logToPage('Error fetching all scores: ' + error.message);
-            console.error('Error fetching all scores:', error);
+        if (easyError || mediumError || hardcoreError) {
+            throw new Error(easyError?.message || mediumError?.message || hardcoreError?.message);
         }
+
+        const formatScores = (scores) => scores
+            .map(entry => `<p>${entry.username}: ${entry.score}</p>`)
+            .join('');
+
+        easyScoresDisplay.innerHTML = formatScores(easyData || []);
+        mediumScoresDisplay.innerHTML = formatScores(mediumData || []);
+        hardcoreScoresDisplay.innerHTML = formatScores(hardcoreData || []);
+        
+        logToPage('All scores fetched and formatted');
+    } catch (error) {
+        logToPage('Error fetching all scores: ' + error.message);
+        console.error('Error fetching all scores:', error);
     }
+}
+
 
     function showMenuLeaderboard() {
         menu.classList.add('hidden');
         menuLeaderboardScreen.classList.remove('hidden');
         fetchAllScores();
-        logToPage('fetchAllScores - done');
+        logToPage('fetchAllScores - done')
     }
   
     function logToPage(message) {
@@ -142,10 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
         logMessage.textContent = message;
         logContainer.appendChild(logMessage);
 
+        // Limit the number of log entries to 10
         if (logContainer.childElementCount > 30) {
             logContainer.removeChild(logContainer.firstChild);
         }
 
+        // Scroll to the bottom of the log container
         logContainer.scrollTop = logContainer.scrollHeight;
     }
     
@@ -225,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchScores();
     }
 
+
     function updateScore() {
         scoreDisplay.textContent = `Score: ${score}`;
     }
@@ -269,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         potato.addEventListener('click', () => {
             if (gameOver) return;
             score += 1;
-            playScoreSound(score);
+            playScoreSound(score);  // Play the appropriate sound
             clearTimeout(potatoTimeout);
             const startX = potato.style.left;
             const startY = potato.style.top;
@@ -330,8 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchScores() {
         logToPage('fetchScores called');
         try {
-            const { data: scores, error } = await supabase
-                .from('Leaderboard')
+            const { data, error } = await supabase
+                .from('potato-leaderboard')
                 .select('*')
                 .eq('difficulty', currentDifficulty)
                 .order('score', { ascending: false })
@@ -339,25 +344,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (error) throw error;
 
-            logToPage('Scores data received: ' + JSON.stringify(scores));
-            if (Array.isArray(scores)) {
-                logToPage('Top scores: ' + JSON.stringify(scores));
-                scoresDisplay.innerHTML = scores.map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
-                logToPage('Leaderboard updated');
-            } else {
-                logToPage('Invalid scores data: ' + JSON.stringify(scores));
-            }
+            logToPage('Scores data received: ' + JSON.stringify(data));
+            scoresDisplay.innerHTML = data.map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
+            logToPage('Leaderboard updated');
         } catch (error) {
-            logToPage('Error fetching scores: ' + error);
+            logToPage('Error fetching scores: ' + error.message);
+            console.error('Error fetching scores:', error);
         }
     }
 
     async function saveScore() {
         logToPage('saveScore called');
         try {
-            // First check if the user already has a score for this difficulty
+            // First check if user already has a score for this difficulty
             const { data: existingScore, error: selectError } = await supabase
-                .from('Leaderboard')
+                .from('potato-leaderboard')
                 .select('score')
                 .eq('username', currentUsername)
                 .eq('difficulty', currentDifficulty)
@@ -367,40 +368,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw selectError;
             }
 
-            let success = false;
-            let message = '';
-
+            let shouldSave = false;
             if (existingScore) {
-                // Update if new score is higher
-                if (score > existingScore.score) {
-                    const { error: updateError } = await supabase
-                        .from('Leaderboard')
-                        .update({ score })
-                        .eq('username', currentUsername)
-                        .eq('difficulty', currentDifficulty);
-
-                    if (updateError) throw updateError;
-                    success = true;
-                } else {
-                    success = false;
-                    message = 'Score not high enough to save';
-                }
+                // Only save if new score is higher
+                shouldSave = score > existingScore.score;
             } else {
-                // Insert new score
-                const { error: insertError } = await supabase
-                    .from('Leaderboard')
-                    .insert([{ username: currentUsername, score, difficulty: currentDifficulty }]);
-
-                if (insertError) throw insertError;
-                success = true;
+                // No existing score, save new one
+                shouldSave = true;
             }
 
-            logToPage(success ? 'Score successfully saved' : message);
-            if (success) {
+            if (shouldSave) {
+                const { error: upsertError } = await supabase
+                    .from('potato-leaderboard')
+                    .upsert(
+                        {
+                            username: currentUsername,
+                            score: score,
+                            difficulty: currentDifficulty,
+                            updated_at: new Date().toISOString()
+                        },
+                        { onConflict: ['username', 'difficulty'] }
+                    );
+
+                if (upsertError) throw upsertError;
+
+                logToPage('Score successfully saved to Supabase.');
                 fetchScores(); // Fetch scores after saving
+            } else {
+                logToPage('Score not high enough to save.');
             }
         } catch (error) {
-            logToPage('Error: ' + error.message);
+            logToPage('Error saving score: ' + error.message);
+            console.error('Error saving score:', error);
         }
     }
 
@@ -411,8 +410,9 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver = true;
         clearTimeout(potatoTimeout);
         removeAllPotatoes();
-        showLeaderboard();
+        showLeaderboard(); // Ensure leaderboard is shown after saving score
     }
+
 
     function removeAllClickablePotatoes() {
         potatoContainer.querySelectorAll('.potato').forEach(p => p.remove());
@@ -460,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menuToggleSoundButton.textContent = soundOn ? 'SFX Off' : 'SFX On';
         toggleSoundButton.textContent = soundOn ? 'SFX Off' : 'SFX On';
     }
+
   
     menuToggleMusicButton.addEventListener('click', toggleMusic);
     menuToggleSoundButton.addEventListener('click', toggleSound);
