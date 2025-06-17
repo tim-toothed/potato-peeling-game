@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ANON KEY IS USED
     const supabaseUrl = 'https://ylrbjiciudweqmfnzghc.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo'
+    const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     const usernameScreen = document.getElementById('username-screen');
     const usernameInput = document.getElementById('username-input');
@@ -91,20 +91,20 @@ async function fetchAllScores() {
     logToPage('fetchAllScores called');
     try {
         // Fetch scores for each difficulty from Supabase
-        const { data: easyData, error: easyError } = await supabase
-            .from('potato-leaderboard')
+        const { data: easyData, error: easyError } = await sbClient
+            .from('potato_leaderboard')
             .select('*')
             .eq('difficulty', 'easy')
             .order('score', { ascending: false });
 
-        const { data: mediumData, error: mediumError } = await supabase
-            .from('potato-leaderboard')
+        const { data: mediumData, error: mediumError } = await sbClient
+            .from('potato_leaderboard')
             .select('*')
             .eq('difficulty', 'medium')
             .order('score', { ascending: false });
 
-        const { data: hardcoreData, error: hardcoreError } = await supabase
-            .from('potato-leaderboard')
+        const { data: hardcoreData, error: hardcoreError } = await sbClient
+            .from('potato_leaderboard')
             .select('*')
             .eq('difficulty', 'hardcore')
             .order('score', { ascending: false });
@@ -335,8 +335,8 @@ async function fetchAllScores() {
     async function fetchScores() {
         logToPage('fetchScores called');
         try {
-            const { data, error } = await supabase
-                .from('potato-leaderboard')
+            const { data, error } = await sbClient
+                .from('potato_leaderboard')
                 .select('*')
                 .eq('difficulty', currentDifficulty)
                 .order('score', { ascending: false })
@@ -357,8 +357,8 @@ async function fetchAllScores() {
         logToPage('saveScore called');
         try {
             // First check if user already has a score for this difficulty
-            const { data: existingScore, error: selectError } = await supabase
-                .from('potato-leaderboard')
+            const { data: existingScore, error: selectError } = await sbClient
+                .from('potato_leaderboard')
                 .select('score')
                 .eq('username', currentUsername)
                 .eq('difficulty', currentDifficulty)
@@ -378,14 +378,13 @@ async function fetchAllScores() {
             }
 
             if (shouldSave) {
-                const { error: upsertError } = await supabase
-                    .from('potato-leaderboard')
+                const { error: upsertError } = await sbClient
+                    .from('potato_leaderboard')
                     .upsert(
                         {
                             username: currentUsername,
                             score: score,
-                            difficulty: currentDifficulty,
-                            updated_at: new Date().toISOString()
+                            difficulty: currentDifficulty
                         },
                         { onConflict: ['username', 'difficulty'] }
                     );
