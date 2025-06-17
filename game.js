@@ -1,9 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ANON KEY IS USED
-    const supabaseUrl = 'https://ylrbjiciudweqmfnzghc.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo'
-    const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
-
     const usernameScreen = document.getElementById('username-screen');
     const usernameInput = document.getElementById('username-input');
     const usernameSubmitButton = document.getElementById('username-submit');
@@ -44,12 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
     const pauseButtonRect = pauseButton.getBoundingClientRect();
     const scoreDisplayRect = scoreDisplay.getBoundingClientRect();
-  
-    // Load sound effects
-    const score01 = document.getElementById('score01');
-    const score05 = document.getElementById('score05');
-    const score25 = document.getElementById('score25');
 
+    // ANON KEY IS USED
+    const supabaseUrl = 'https://ylrbjiciudweqmfnzghc.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo'
+    const sbClient = supabase.createClient(supabaseUrl, supabaseKey);
   
     let score = 0;
     let gameOver = false;
@@ -70,11 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let audio;
         if (score % 25 === 0) {
-            audio = new Audio('https://cdn.glitch.global/98068d87-f126-40c5-98b2-8267f0a1dce9/score_25.mp3?v=1718247092169');
+            audio = new Audio('assets/sounds/score_25.mp3');
         } else if (score % 5 === 0) {
-            audio = new Audio('https://cdn.glitch.global/98068d87-f126-40c5-98b2-8267f0a1dce9/score_05.mp3?v=1718247093035');
+            audio = new Audio('assets/sounds/score_05.mp3');
         } else {
-            audio = new Audio('https://cdn.glitch.global/98068d87-f126-40c5-98b2-8267f0a1dce9/score_01.mp3?v=1718247092646');
+            audio = new Audio('assets/sounds/score_01.mp3');
         }
         audio.play();
     }
@@ -138,7 +132,7 @@ async function fetchAllScores() {
   
     function logToPage(message) {
         const logContainer = document.getElementById('log-container');
-        logContainer.style.display = 'none'; // block
+        logContainer.style.display = 'none'; // none
 
         const logMessage = document.createElement('p');
         logMessage.textContent = message;
@@ -263,7 +257,7 @@ async function fetchAllScores() {
         potato.style.width = `${potatoWidth}px`;
         potato.style.height = `${potatoHeight}px`;
         potato.style.transform = `rotate(${rotation}deg)`;
-        potato.style.backgroundImage = 'url(https://cdn.glitch.global/05ee0fcd-b884-41bf-af4c-2a28989e8dd0/pot0.png?v=1717924371096)';
+        potato.style.backgroundImage = 'url(assets/images/pot0.png)';
         potatoContainer.appendChild(potato);
 
         clearTimeout(potatoTimeout);
