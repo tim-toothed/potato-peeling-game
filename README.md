@@ -1,7 +1,8 @@
 # ВИЛКОЙ ЧИСТИ!  
 <a href="https://yourusername.github.io/repo-name/](https://tim-toothed.github.io/potato-peeling-game/">
   <img src="https://img.shields.io/badge/Play-Game-FF9900?style=for-the-badge&logo=github&logoColor=white" alt="Play Game">
-</a>
+</a>  
+
 *Картофельный ад, где каждый клик приближает тебя к просветлению.*  
 
 ![Alt Text](assets/gameplay.gif)
