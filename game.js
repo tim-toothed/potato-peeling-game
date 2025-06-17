@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Supabase client
+
+    NEXT_PUBLIC_SUPABASE_URL="https://ylrbjiciudweqmfnzghc.supabase.co"
+    NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlscmJqaWNpdWR3ZXFtZm56Z2hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMTQ4MDksImV4cCI6MjA2NTY5MDgwOX0.eR-eSeTZR8ZUBC21zIjqDYX0fez6whLsduFNEVr7vYo"     
+    const supabase = supabase.createClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
     const usernameScreen = document.getElementById('username-screen');
     const usernameInput = document.getElementById('username-input');
     const usernameSubmitButton = document.getElementById('username-submit');
@@ -45,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const score05 = document.getElementById('score05');
     const score25 = document.getElementById('score25');
 
-  
     let score = 0;
     let gameOver = false;
     let potatoTimeout;
@@ -61,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bucketY = 340;
 
     function playScoreSound(score) {
-        if (!soundOn) return; // Check if sound is turned on before playing any sound
+        if (!soundOn) return;
 
         let audio;
         if (score % 25 === 0) {
@@ -74,59 +79,59 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.play();
     }
 
-  
-  
     function isWithinExclusionZone(x, y, exclusionZones) {
         return exclusionZones.some(zone => (
             x > zone.left && x < zone.right && y > zone.top && y < zone.bottom
         ));
     }
   
-    function fetchAllScores() {
+    async function fetchAllScores() {
         logToPage('fetchAllScores called');
-        fetch('/scores')
-            .then(response => {
-                logToPage('Response received from /scores: ' + response.status);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                logToPage('Scores data received: ' + JSON.stringify(data));
-                const { easy, medium, hardcore } = data.scores;
+        try {
+            // Fetch scores for each difficulty from Supabase
+            const { data: easyScores, error: easyError } = await supabase
+                .from('Leaderboard')
+                .select('*')
+                .eq('difficulty', 'easy')
+                .order('score', { ascending: false });
 
-                logToPage('Parsed scores:');
-                logToPage('Easy: ' + JSON.stringify(easy));
-                logToPage('Medium: ' + JSON.stringify(medium));
-                logToPage('Hardcore: ' + JSON.stringify(hardcore));
+            const { data: mediumScores, error: mediumError } = await supabase
+                .from('Leaderboard')
+                .select('*')
+                .eq('difficulty', 'medium')
+                .order('score', { ascending: false });
 
-                const formatScores = (scores) => scores.sort((a, b) => b.score - a.score)
-                    .map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
+            const { data: hardcoreScores, error: hardcoreError } = await supabase
+                .from('Leaderboard')
+                .select('*')
+                .eq('difficulty', 'hardcore')
+                .order('score', { ascending: false });
 
-                easyScoresDisplay.innerHTML = formatScores(easy);
-                logToPage('Easy scores formatted');
-                mediumScoresDisplay.innerHTML = formatScores(medium);
-                logToPage('Medium scores formatted');
-                hardcoreScoresDisplay.innerHTML = formatScores(hardcore);
-                logToPage('Hardcore scores formatted');
-            })
-            .catch(error => {
-                logToPage('Error fetching all scores: ' + error.message);
-                console.error('Error fetching all scores:', error);
-            });
+            if (easyError || mediumError || hardcoreError) {
+                throw easyError || mediumError || hardcoreError;
+            }
+
+            logToPage('Scores data received');
+            logToPage('Easy: ' + JSON.stringify(easyScores));
+            logToPage('Medium: ' + JSON.stringify(mediumScores));
+            logToPage('Hardcore: ' + JSON.stringify(hardcoreScores));
+
+            const formatScores = (scores) => scores.map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
+
+            easyScoresDisplay.innerHTML = formatScores(easyScores || []);
+            mediumScoresDisplay.innerHTML = formatScores(mediumScores || []);
+            hardcoreScoresDisplay.innerHTML = formatScores(hardcoreScores || []);
+        } catch (error) {
+            logToPage('Error fetching all scores: ' + error.message);
+            console.error('Error fetching all scores:', error);
+        }
     }
-
 
     function showMenuLeaderboard() {
         menu.classList.add('hidden');
         menuLeaderboardScreen.classList.remove('hidden');
         fetchAllScores();
-        logToPage('fetchAllScores - done')
-    }
-  
-    function wakeUpDatabase() {
-        fetch('https://sql-db-for-potato.glitch.me/wake-up')
+        logToPage('fetchAllScores - done');
     }
   
     function logToPage(message) {
@@ -137,12 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
         logMessage.textContent = message;
         logContainer.appendChild(logMessage);
 
-        // Limit the number of log entries to 10
         if (logContainer.childElementCount > 30) {
             logContainer.removeChild(logContainer.firstChild);
         }
 
-        // Scroll to the bottom of the log container
         logContainer.scrollTop = logContainer.scrollHeight;
     }
     
@@ -156,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showUsernameScreen() {
         pauseScreen.classList.add('hidden');
-        wakeUpDatabase();
         usernameScreen.classList.remove('hidden');
         menu.classList.add('hidden');
         difficultyScreen.classList.add('hidden');
@@ -223,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchScores();
     }
 
-
     function updateScore() {
         scoreDisplay.textContent = `Score: ${score}`;
     }
@@ -268,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         potato.addEventListener('click', () => {
             if (gameOver) return;
             score += 1;
-            playScoreSound(score);  // Play the appropriate sound
+            playScoreSound(score);
             clearTimeout(potatoTimeout);
             const startX = potato.style.left;
             const startY = potato.style.top;
@@ -326,61 +327,81 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { once: true });
     }
 
-    function fetchScores() {
+    async function fetchScores() {
         logToPage('fetchScores called');
-        fetch(`/scores/${currentDifficulty}`)
-            .then(response => {
-                logToPage('Response received from /scores: ' + response.status);
-                return response.json();
-            })
-            .then(data => {
-                logToPage('Scores data received: ' + JSON.stringify(data));
-                if (Array.isArray(data)) {
-                    const scores = data;
-                    scores.sort((a, b) => b.score - a.score);
-                    const topScores = scores.slice(0, 13); // Get the top 13 scores
-                    logToPage('Top scores: ' + JSON.stringify(topScores));
-                    scoresDisplay.innerHTML = topScores.map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
-                    logToPage('Leaderboard updated');
-                } else {
-                    logToPage('Invalid scores data: ' + JSON.stringify(data));
-                }
-            })
-            .catch(error => {
-                logToPage('Error fetching scores: ' + error);
-            });
+        try {
+            const { data: scores, error } = await supabase
+                .from('Leaderboard')
+                .select('*')
+                .eq('difficulty', currentDifficulty)
+                .order('score', { ascending: false })
+                .limit(13);
+
+            if (error) throw error;
+
+            logToPage('Scores data received: ' + JSON.stringify(scores));
+            if (Array.isArray(scores)) {
+                logToPage('Top scores: ' + JSON.stringify(scores));
+                scoresDisplay.innerHTML = scores.map(entry => `<p>${entry.username}: ${entry.score}</p>`).join('');
+                logToPage('Leaderboard updated');
+            } else {
+                logToPage('Invalid scores data: ' + JSON.stringify(scores));
+            }
+        } catch (error) {
+            logToPage('Error fetching scores: ' + error);
+        }
     }
 
-    function saveScore() {
+    async function saveScore() {
         logToPage('saveScore called');
-        fetch('/save-score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'admin_key': '' // Include this if the key is needed
-            },
-            body: JSON.stringify({ username: currentUsername, score, difficulty: currentDifficulty })
-        })
-        .then(response => {
-            logToPage('Response received from /save-score: ' + response.status);
-            return response.json();
-        })
-        .then(data => {
-            logToPage('Response data from /save-score: ' + JSON.stringify(data));
-            if (data.success) {
-                logToPage('Score successfully saved to server.');
-                fetchScores(); // Fetch scores after saving
-            } else {
-                if (data.message === 'Score not high enough to save') {
-                    logToPage('Score not high enough to save.');
-                } else {
-                    logToPage('Failed to save score to server.');
-                }
+        try {
+            // First check if the user already has a score for this difficulty
+            const { data: existingScore, error: selectError } = await supabase
+                .from('Leaderboard')
+                .select('score')
+                .eq('username', currentUsername)
+                .eq('difficulty', currentDifficulty)
+                .single();
+
+            if (selectError && selectError.code !== 'PGRST116') { // Ignore "no rows" error
+                throw selectError;
             }
-        })
-        .catch(error => {
-            logToPage('Error: ' + error);
-        });
+
+            let success = false;
+            let message = '';
+
+            if (existingScore) {
+                // Update if new score is higher
+                if (score > existingScore.score) {
+                    const { error: updateError } = await supabase
+                        .from('Leaderboard')
+                        .update({ score })
+                        .eq('username', currentUsername)
+                        .eq('difficulty', currentDifficulty);
+
+                    if (updateError) throw updateError;
+                    success = true;
+                } else {
+                    success = false;
+                    message = 'Score not high enough to save';
+                }
+            } else {
+                // Insert new score
+                const { error: insertError } = await supabase
+                    .from('Leaderboard')
+                    .insert([{ username: currentUsername, score, difficulty: currentDifficulty }]);
+
+                if (insertError) throw insertError;
+                success = true;
+            }
+
+            logToPage(success ? 'Score successfully saved' : message);
+            if (success) {
+                fetchScores(); // Fetch scores after saving
+            }
+        } catch (error) {
+            logToPage('Error: ' + error.message);
+        }
     }
 
     function endGame() {
@@ -390,9 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver = true;
         clearTimeout(potatoTimeout);
         removeAllPotatoes();
-        showLeaderboard(); // Ensure leaderboard is shown after saving score
+        showLeaderboard();
     }
-
 
     function removeAllClickablePotatoes() {
         potatoContainer.querySelectorAll('.potato').forEach(p => p.remove());
@@ -440,7 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
         menuToggleSoundButton.textContent = soundOn ? 'SFX Off' : 'SFX On';
         toggleSoundButton.textContent = soundOn ? 'SFX Off' : 'SFX On';
     }
-
   
     menuToggleMusicButton.addEventListener('click', toggleMusic);
     menuToggleSoundButton.addEventListener('click', toggleSound);
